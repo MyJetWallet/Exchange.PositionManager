@@ -4,7 +4,7 @@ on:
     tags: "*"
 
 env:
-  IMAGE_NAME: myjettools/my-service-bus
+  IMAGE_NAME: myjetwallet/position-manager
 
 jobs:
   build:
@@ -20,8 +20,9 @@ jobs:
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_HOST: ${{ secret.AZURE_CONTAINER_REGISTRY }}
         run: |
-          echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin
+          echo "$DOCKER_PASS" | docker login "$DOCKER_HOST" --username "$DOCKER_USER" --password-stdin
       - name: Docker Build and Publish
         run: |
           ver=$(cat Cargo.toml | grep -m1 version | grep  -Eo '["\047].*["\047]' | tr -d '"')
