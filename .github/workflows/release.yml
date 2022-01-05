@@ -20,7 +20,7 @@ jobs:
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_HOST: ${{ secret.AZURE_CONTAINER_REGISTRY }}
+          DOCKER_HOST: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
         run: |
           echo "$DOCKER_PASS" | docker login "$DOCKER_HOST" --username "$DOCKER_USER" --password-stdin
       - name: Docker Build and Publish
