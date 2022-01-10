@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use async_trait::async_trait;
-use my_service_bus_tcp_client::MyServiceBusClient;
+use my_service_bus_tcp_client::{MyServiceBusClient, MessageToPublish};
 use prost::Message;
 use tokio::sync::RwLock;
 
@@ -46,7 +46,7 @@ impl SbEventPublisherFacade for Arc<AppContext> {
             .await
             .as_ref()
             .unwrap()
-            .publish("open_position_event".into(), serialized_message)
+            .publish("open_position_event".into(), MessageToPublish::new(serialized_message))
             .await;
     }
     async fn publish_close_position_event(&self, order: Order) {
@@ -58,7 +58,7 @@ impl SbEventPublisherFacade for Arc<AppContext> {
             .await
             .as_ref()
             .unwrap()
-            .publish("close_position_event".into(), serialized_message)
+            .publish("close_position_event".into(), MessageToPublish::new(serialized_message))
             .await;
     }
 }

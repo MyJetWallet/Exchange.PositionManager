@@ -43,8 +43,9 @@ impl OpenPositionResult {
     }
 }
 
-pub async fn handle_open_position<T: AccountsCacheFacade + SbEventPublisherFacade>(
-    app_context: T,
+pub async fn handle_open_position<T: AccountsCacheFacade, F: SbEventPublisherFacade>(
+    account_cache: T,
+    sb_publisher: F,
     position: OpenPositionCommand,
 ) {
     let current_bid_ask = None;
@@ -62,7 +63,7 @@ pub async fn handle_open_position<T: AccountsCacheFacade + SbEventPublisherFacad
                 OpenPositionStatus::Ok,
             );
 
-            app_context.set_active_order(active_order).await;
+            account_cache.set_active_order(active_order).await;
             open_result
         }
         None => {
@@ -75,6 +76,6 @@ pub async fn handle_open_position<T: AccountsCacheFacade + SbEventPublisherFacad
             )
         }
     };
-    app_context.publish_open_position_event(result);
+    sb_publisher.publish_open_position_event(result);
 
 }

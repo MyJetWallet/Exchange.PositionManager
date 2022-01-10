@@ -1,40 +1,32 @@
 use std::sync::Arc;
 
-use my_service_bus_shared::queue::TopicQueueType;
+use async_trait::async_trait;
+use my_service_bus_tcp_client::subscribers::{MessagesReader, SubscriberCallback};
 
-use crate::{
-    app::AppContext,
-    flows::{handle_open_position},
-    service_bus::OpenPositionCommand,
-};
+use crate::{flows::handle_open_position, service_bus::OpenPositionCommand, AppContext};
 
-pub async fn open_position_subscribe(
+pub struct OpenPositionSubscriber {
     app: Arc<AppContext>,
-    sb_client: &my_service_bus_tcp_client::MyServiceBusClient,
-) {
-    let mut subscriber = sb_client
-        .subscribe(
-            "open_position".into(),
-            "position_manager".into(),
-            TopicQueueType::Permanent,
-        )
-        .await;
+}
 
-    let sub_handle = tokio::spawn(async move {
-        println!("Open position subscribe started");
-        for mess in subscriber.get_next_messages().await {
-            match OpenPositionCommand::parse(&mess.content[..]) {
+impl OpenPositionSubscriber {
+    pub fn new(app: Arc<AppContext>) -> OpenPositionSubscriber {
+        return OpenPositionSubscriber { app: app };
+    }
+}
+
+#[async_trait]
+impl SubscriberCallback for OpenPositionSubscriber {
+    async fn new_events(&self, mut messages_reader: MessagesReader) {
+        for msg in messages_reader.get_messages() {
+            match OpenPositionCommand::parse(&msg.content[..]) {
                 Ok(command) => {
-                    let open_result = handle_open_position(app.clone(), command).await;
+                    handle_open_position(self.app.clone(), self.app.clone(), command).await;
                 }
                 Err(error_mess) => {
                     panic!("Error handle bid ask: {}", error_mess)
                 }
-            };
+            }
         }
-        //println!("subscriber finished!");
-    });
-
-    // app.active_orders_cache.update_rate_and_close_positions(bid_ask);
-
+    }
 }

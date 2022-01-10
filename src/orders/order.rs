@@ -180,14 +180,6 @@ impl Order {
         }
     }
 
-    // pub fn get_reserved_fund_for_topping_up(&self) -> f64{
-    //     match self{
-    //         Order::Active(active_state, _) => active_state.reserved_fund_for_topping_up,
-    //         Order::Closed(_, _) => panic!("cant get topping up reserve for closed order"),
-    //         Order::Pending(_, _) => panic!("cant get topping up reserve for pending order"),
-    //     }
-    // }
-
     pub fn convert_pending_to_active(
         self,
         open_price: f64,
@@ -231,18 +223,4 @@ impl Order {
         let pending_state = PendingOrderStateInfo::new(desire_price);
         return Self::Pending(pending_state, order_data);
     }
-
-    // pub fn active_to_closed(self, close_bid_ask: BidAsk, burn_bonus: f64, close_reason: ClosePositionReason) -> Self{
-    //     match self {
-    //         Order::Active(state, order_data) => {
-    //             let close_price = order_data.get_price(&close_bid_ask);
-    //             let close_date = get_current_time();
-    //             let closed_state = ClosedOrderStateInfo::from_active(state, close_bid_ask, close_price, close_date, burn_bonus, close_reason);
-
-    //             return Self::Closed(closed_state, order_data);
-    //         },
-    //         Order::Closed(_, _) => panic!("cant close closed order"),
-    //         Order::Pending(_, _) => panic!("cant close pending order"),
-    //     }
-    // }
 }

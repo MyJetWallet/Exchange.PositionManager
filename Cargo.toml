@@ -7,11 +7,13 @@ edition = "2021"
 
 [dependencies]
 tonic = { version = "0.6.1", features = ["tls", "tls-roots", "prost"] }
-tokio = { version = "1.12", features = ["full"] }
+tokio = { version = "*", features = ["full"] }
+tokio-util = "*"
 prost = "0.9.0"
 prost-types = "0.9.0"
 async-trait = "0.1.52"
-my-service-bus-tcp-client = { branch = "main", git = "https://github.com/MyJetTools/my-service-bus-tcp-client.git" }
-my-service-bus-shared = { branch = "main", git = "https://github.com/MyJetTools/my-service-bus-shared.git" }
+my-service-bus-shared = { branch = "0.1.1", git = "https://github.com/MyJetTools/my-service-bus-shared.git" }
+my-service-bus-tcp-client = { branch = "0.1.1-rc", git = "https://github.com/MyJetTools/my-service-bus-tcp-client.git" }
+
 serde = { version = "1.0.126", features = ["derive"] }
 serde_json = "1.0"
